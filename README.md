@@ -67,19 +67,19 @@ good installation path if you are just testing or doing development on the plugi
   # sudo su - nexus
   $ cd <nexus_dir>/bin
   $ ./nexus run
-  > bundle:install file:///tmp/nexus3-bitbucketcloud-auth-plugin-1.0.0.jar
+  > bundle:install file:///tmp/nexus3-shutdown-backup-plugin-1.0.0.jar
   > bundle:list
   ```
-  (look for org.sonatype.nexus.plugins:nexus3-bitbucketcloud-auth-plugin ID, should be the last one)
+  (look for org.sonatype.nexus.plugins:nexus3-shutdown-backup-plugin ID, should be the last one)
   ```
-  > bundle:start <org.sonatype.nexus.plugins:nexus3-bitbucketcloud-auth-plugin ID>
+  > bundle:start <org.sonatype.nexus.plugins:nexus3-shutdown-backup-plugin ID>
   ```
 
 ### (more) Permanent Install
 
 For more permanent installs of the plugin, follow these instructions:
 
-* Copy the bundle (nexus3-bitbucketcloud-auth-plugin-1.0.0.jar) into <nexus_dir>/deploy
+* Copy the bundle (nexus3-shutdown-backup-plugin-1.0.0.jar) into <nexus_dir>/deploy
 
 This will cause the plugin to be loaded with each restart of Nexus Repository. As well, this folder is monitored
 by Nexus Repository and the plugin should load within 60 seconds of being copied there if Nexus Repository
