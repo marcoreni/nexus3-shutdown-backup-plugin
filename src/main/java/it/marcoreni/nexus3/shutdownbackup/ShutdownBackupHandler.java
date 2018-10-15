@@ -14,6 +14,7 @@ package it.marcoreni.nexus3.shutdownbackup;
 
 
 import java.util.concurrent.TimeUnit;
+import javax.annotation.Priority;
 import javax.inject.Inject;
 import javax.inject.Named;
 import javax.inject.Singleton;
@@ -21,6 +22,7 @@ import javax.inject.Singleton;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.sonatype.nexus.common.app.ManagedLifecycle;
+import org.sonatype.nexus.common.event.EventAware;
 import org.sonatype.nexus.common.stateguard.StateGuardLifecycleSupport;
 import org.sonatype.nexus.scheduling.TaskInfo;
 import org.sonatype.nexus.scheduling.TaskRemovedException;
@@ -35,9 +37,11 @@ import static org.sonatype.nexus.common.app.ManagedLifecycle.Phase.TASKS;
  */
 @Named
 @ManagedLifecycle(phase = TASKS)
+@Priority(Integer.MIN_VALUE)
 @Singleton
 public class ShutdownBackupHandler
-    extends StateGuardLifecycleSupport {
+    extends StateGuardLifecycleSupport
+    implements EventAware {
 
   private final TaskScheduler taskScheduler;
 
@@ -50,6 +54,7 @@ public class ShutdownBackupHandler
 
   @Override
   protected void doStop() {
+    LOGGER.debug("Before stopping, let's backup the DB...");
     for (TaskInfo task : taskScheduler.listsTasks()) {
       if (DatabaseBackupTaskDescriptor.TYPE_ID
           .equals(task.getConfiguration().getTypeId())) {
@@ -58,14 +63,17 @@ public class ShutdownBackupHandler
         } catch (TaskRemovedException|IllegalStateException e) {
           LOGGER.error("Error while triggering task run", e);
         }
-
+        LOGGER.debug("Now we will wait; future is " + task.getCurrentState().getFuture() + "...");
         while (task.getCurrentState().getFuture() != null && !task.getCurrentState().getFuture().isDone()) {
           try {
+            LOGGER.debug("Going to sleep since state is " + task.getCurrentState().getFuture().isDone() + "...");
             TimeUnit.SECONDS.sleep(1);
+            LOGGER.debug("Waking up...");
           } catch (Exception e) {
             LOGGER.error("Error while waiting for task to be over", e);
           }
         }
+        LOGGER.debug("All done...");
         break;
       }
     }
