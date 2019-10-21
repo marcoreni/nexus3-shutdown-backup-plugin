@@ -12,7 +12,6 @@
  */
 package it.marcoreni.nexus3.shutdownbackup;
 
-
 import java.util.concurrent.TimeUnit;
 import javax.annotation.Priority;
 import javax.inject.Inject;
@@ -39,9 +38,7 @@ import static org.sonatype.nexus.common.app.ManagedLifecycle.Phase.TASKS;
 @ManagedLifecycle(phase = TASKS)
 @Priority(Integer.MIN_VALUE)
 @Singleton
-public class ShutdownBackupHandler
-    extends StateGuardLifecycleSupport
-    implements EventAware {
+public class ShutdownBackupHandler extends StateGuardLifecycleSupport implements EventAware {
 
   private final TaskScheduler taskScheduler;
 
@@ -54,10 +51,10 @@ public class ShutdownBackupHandler
 
   @Override
   protected void doStop() {
-    LOGGER.debug("Before stopping, let's backup the DB...");
+    LOGGER.info("Before stopping, let's try a backup of the DB...");
     for (TaskInfo task : taskScheduler.listsTasks()) {
-      if (DatabaseBackupTaskDescriptor.TYPE_ID
-          .equals(task.getConfiguration().getTypeId())) {
+      if (DatabaseBackupTaskDescriptor.TYPE_ID.equals(task.getConfiguration().getTypeId())) {
+        LOGGER.info("Executing task: {}", task.getConfiguration().getName());
         try {
           task.runNow();
         } catch (TaskRemovedException|IllegalStateException e) {

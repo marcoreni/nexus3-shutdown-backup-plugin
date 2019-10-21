@@ -18,6 +18,7 @@
 * [Developing](#developing)
    * [Requirements](#requirements)
    * [Building](#building)
+   * [Testing](#testing)
 * [Using Plugin with Nexus Repository Manger 3](#using-plugin-with-nexus-repository-manager-3)
 * [Installing the plugin](#installing-the-plugin)
    * [Temporary Install](#temporary-install)
@@ -38,11 +39,40 @@ Also, there is a good amount of information available at [Bundle Development](ht
 
 ### Building
 
-To build the project and generate the bundle use Maven
+You can build the project with the integrated maven wrapper like so:
 
-    mvn clean install
+```shell
+./mvnw clean package
+```
 
 If everything checks out, the bundle should be available in the `target` folder
+
+You can also build locally using Docker by running:
+
+```shell
+docker run --rm -it -v $(pwd):/data -w /data maven:3.5.2 mvn clean package
+```
+
+### Testing
+
+You can build a ready to run docker image using the [`Dockerfile`](Dockerfile) to quickly spin up a nexus with the plugin already preinstalled:
+
+```shell
+docker build -t rti-sonatype-nexus:3.19.1-shutdown-backup-plugin .
+
+mkdir $(pwd)/nexus-data-backup
+docker run --rm -it -v $(pwd)/nexus-data-backup:/nexus-data-backup -p 8081:8081 rti-sonatype-nexus:3.19.1-shutdown-backup-plugin
+```
+
+To get the admin password use:
+
+```shell
+docker exec -it <container-id> cat /nexus-data/admin.password
+```
+
+You must also have a "Exports databases for backup" task configured with the proper folder:
+
+![setup](setup.png)
 
 ## Using Plugin With Nexus Repository Manager 3
 
@@ -67,7 +97,7 @@ good installation path if you are just testing or doing development on the plugi
   # sudo su - nexus
   $ cd <nexus_dir>/bin
   $ ./nexus run
-  > bundle:install file:///tmp/nexus3-shutdown-backup-plugin-1.0.0.jar
+  > bundle:install file:///tmp/nexus3-shutdown-backup-plugin-1.0.2.jar
   > bundle:list
   ```
   (look for org.sonatype.nexus.plugins:nexus3-shutdown-backup-plugin ID, should be the last one)
@@ -110,3 +140,34 @@ Looking to contribute to our code but need some help? There's a few ways to get 
 * Chat with us on [Gitter](https://gitter.im/sonatype/nexus-developers)
 * Check out the [Nexus3](http://stackoverflow.com/questions/tagged/nexus3) tag on Stack Overflow
 * Check out the [Nexus Repository User List](https://groups.google.com/a/glists.sonatype.com/forum/?hl=en#!forum/nexus-users)
+
+
+## Development
+
+You can build the project with the integrated maven wrapper like so:
+
+```shell
+./mvnw clean package
+```
+
+or can also build locally using Docker by running:
+
+```shell
+docker run --rm -it -v $(pwd):/data -w /data maven:3.5.2 mvn clean package
+```
+
+## Testing
+
+You can build a ready to run docker image using the [`Dockerfile`](Dockerfile) to quickly spin up a nexus with the plugin already preinstalled:
+
+```shell
+docker build -it rti-sonatype-nexus:3.19.1-bitbucketcloud-auth-plugin .
+
+docker run -p 8081:8081 rti-sonatype-nexus:3.19.1-bitbucketcloud-auth-plugin
+```
+
+to get the admin password
+
+```shell
+docker exec -it <container-id> cat /nexus-data/admin.password
+```
