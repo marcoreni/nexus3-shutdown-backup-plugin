@@ -140,34 +140,3 @@ Looking to contribute to our code but need some help? There's a few ways to get 
 * Chat with us on [Gitter](https://gitter.im/sonatype/nexus-developers)
 * Check out the [Nexus3](http://stackoverflow.com/questions/tagged/nexus3) tag on Stack Overflow
 * Check out the [Nexus Repository User List](https://groups.google.com/a/glists.sonatype.com/forum/?hl=en#!forum/nexus-users)
-
-
-## Development
-
-You can build the project with the integrated maven wrapper like so:
-
-```shell
-./mvnw clean package
-```
-
-or can also build locally using Docker by running:
-
-```shell
-docker run --rm -it -v $(pwd):/data -w /data maven:3.5.2 mvn clean package
-```
-
-## Testing
-
-You can build a ready to run docker image using the [`Dockerfile`](Dockerfile) to quickly spin up a nexus with the plugin already preinstalled:
-
-```shell
-docker build -it rti-sonatype-nexus:3.19.1-bitbucketcloud-auth-plugin .
-
-docker run -p 8081:8081 rti-sonatype-nexus:3.19.1-bitbucketcloud-auth-plugin
-```
-
-to get the admin password
-
-```shell
-docker exec -it <container-id> cat /nexus-data/admin.password
-```
