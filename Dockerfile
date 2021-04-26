@@ -1,10 +1,11 @@
 FROM maven:3.5.2 as builder
-MAINTAINER daniele.curci@gmail.com
+LABEL maintainers="Daniele Curci daniele.curci@gmail.com, Marco Reni reni.marco@gmail.com"
+
 COPY . /build
 WORKDIR /build
 RUN mvn versions:set -DnewVersion=docker; mvn clean package
 
-FROM sonatype/nexus3:3.19.1
+FROM sonatype/nexus3:3.30.1
 USER root
 RUN mkdir -p /opt/sonatype/nexus/system/it/marcoreni/nexus3-shutdown-backup-plugin/docker/
 COPY --from=builder /build/target/nexus3-shutdown-backup-plugin-docker.jar /opt/sonatype/nexus/system/it/marcoreni/nexus3-shutdown-backup-plugin/docker/

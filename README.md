@@ -12,28 +12,33 @@
     Eclipse Foundation. All other trademarks are the property of their respective owners.
 
 -->
+
 # Nexus Shutdown Backup Plugin
 
-# Table Of Contents
-* [Developing](#developing)
-   * [Requirements](#requirements)
-   * [Building](#building)
-   * [Testing](#testing)
-* [Using Plugin with Nexus Repository Manger 3](#using-plugin-with-nexus-repository-manager-3)
-* [Installing the plugin](#installing-the-plugin)
-   * [Temporary Install](#temporary-install)
-   * [(more) Permanent Install](#more-permanent-install)
-   * [(most) Permament Install](#most-permanent-install)
-* [The Fine Print](#the-fine-print)
-* [Getting Help](#getting-help)
+## Table Of Contents
+
+- [Nexus Shutdown Backup Plugin](#nexus-shutdown-backup-plugin)
+  - [Table Of Contents](#table-of-contents)
+  - [Developing](#developing)
+    - [Requirements](#requirements)
+    - [Building](#building)
+    - [Testing](#testing)
+  - [Using Plugin With Nexus Repository Manager 3](#using-plugin-with-nexus-repository-manager-3)
+  - [Installing the plugin](#installing-the-plugin)
+    - [Temporary Install](#temporary-install)
+    - [(more) Permanent Install](#more-permanent-install)
+    - [(most) Permanent Install](#most-permanent-install)
+      - [FIXME](#fixme)
+  - [The Fine Print](#the-fine-print)
+  - [Getting help](#getting-help)
 
 ## Developing
 
 ### Requirements
 
-* [Apache Maven 3.3.3+](https://maven.apache.org/install.html)
-* [Java 8+](http://www.oracle.com/technetwork/java/javase/downloads/jdk8-downloads-2133151.html)
-* Network access to https://repository.sonatype.org/content/groups/sonatype-public-grid
+- [Apache Maven 3.3.3+](https://maven.apache.org/install.html)
+- [Java 8+](http://www.oracle.com/technetwork/java/javase/downloads/jdk8-downloads-2133151.html)
+- Network access to <https://repository.sonatype.org/content/groups/sonatype-public-grid>
 
 Also, there is a good amount of information available at [Bundle Development](https://help.sonatype.com/display/NXRM3/Bundle+Development)
 
@@ -58,10 +63,10 @@ docker run --rm -it -v $(pwd):/data -w /data maven:3.5.2 mvn clean package
 You can build a ready to run docker image using the [`Dockerfile`](Dockerfile) to quickly spin up a nexus with the plugin already preinstalled:
 
 ```shell
-docker build -t rti-sonatype-nexus:3.19.1-shutdown-backup-plugin .
+docker build -t rti-sonatype-nexus:3.30.1-shutdown-backup-plugin .
 
 mkdir $(pwd)/nexus-data-backup
-docker run --rm -it -v $(pwd)/nexus-data-backup:/nexus-data-backup -p 8081:8081 rti-sonatype-nexus:3.19.1-shutdown-backup-plugin
+docker run --rm -it -v $(pwd)/nexus-data-backup:/nexus-data-backup -p 8081:8081 rti-sonatype-nexus:3.30.1-shutdown-backup-plugin
 ```
 
 To get the admin password use:
@@ -76,7 +81,7 @@ You must also have a "Exports databases for backup" task configured with the pro
 
 ## Using Plugin With Nexus Repository Manager 3
 
-Requires Nexus Repository Manager version >= 3.8.0
+Requires Nexus Repository Manager version >= 3.30.1
 
 ## Installing the plugin
 
@@ -88,20 +93,23 @@ then install the plugin with the options shown below:
 Installations done via the Karaf console will be wiped out with every restart of Nexus Repository. This is a
 good installation path if you are just testing or doing development on the plugin.
 
-* Enable Nexus console: edit `<nexus_dir>/bin/nexus.vmoptions` and change `karaf.startLocalConsole`  to `true`.
+- Enable Nexus console: edit `<nexus_dir>/bin/nexus.vmoptions` and change `karaf.startLocalConsole`  to `true`.
 
   More details here: [Bundle Development](https://help.sonatype.com/display/NXRM3/Bundle+Development+Overview)
 
-* Run Nexus' console:
-  ```
+- Run Nexus' console:
+
+  ```sh
   # sudo su - nexus
   $ cd <nexus_dir>/bin
   $ ./nexus run
-  > bundle:install file:///tmp/nexus3-shutdown-backup-plugin-1.0.2.jar
+  > bundle:install file:///tmp/nexus3-shutdown-backup-plugin-1.0.3.jar
   > bundle:list
   ```
+
   (look for org.sonatype.nexus.plugins:nexus3-shutdown-backup-plugin ID, should be the last one)
-  ```
+
+  ```sh
   > bundle:start <org.sonatype.nexus.plugins:nexus3-shutdown-backup-plugin ID>
   ```
 
@@ -109,14 +117,15 @@ good installation path if you are just testing or doing development on the plugi
 
 For more permanent installs of the plugin, follow these instructions:
 
-* Copy the bundle (nexus3-shutdown-backup-plugin-1.0.0.jar) into <nexus_dir>/deploy
+- Copy the bundle (nexus3-shutdown-backup-plugin-1.0.0.jar) into <nexus_dir>/deploy
 
 This will cause the plugin to be loaded with each restart of Nexus Repository. As well, this folder is monitored
 by Nexus Repository and the plugin should load within 60 seconds of being copied there if Nexus Repository
 is running. You will still need to start the bundle using the karaf commands mentioned in the temporary install.
 
 ### (most) Permanent Install
-# FIXME
+
+#### FIXME
 
 ## The Fine Print
 
@@ -125,9 +134,9 @@ to the open source community (read: you!)
 
 Remember:
 
-* Use this contribution at the risk tolerance that you have
-* Do NOT file Sonatype support tickets related to CPAN support in regard to this plugin
-* DO file issues here on GitHub, so that the community can pitch in
+- Use this contribution at the risk tolerance that you have
+- Do NOT file Sonatype support tickets related to CPAN support in regard to this plugin
+- DO file issues here on GitHub, so that the community can pitch in
 
 Phew, that was easier than I thought. Last but not least of all:
 
@@ -137,6 +146,6 @@ Have fun creating and using this plugin and the Nexus platform, we are glad to h
 
 Looking to contribute to our code but need some help? There's a few ways to get information:
 
-* Chat with us on [Gitter](https://gitter.im/sonatype/nexus-developers)
-* Check out the [Nexus3](http://stackoverflow.com/questions/tagged/nexus3) tag on Stack Overflow
-* Check out the [Nexus Repository User List](https://groups.google.com/a/glists.sonatype.com/forum/?hl=en#!forum/nexus-users)
+- Chat with us on [Gitter](https://gitter.im/sonatype/nexus-developers)
+- Check out the [Nexus3](http://stackoverflow.com/questions/tagged/nexus3) tag on Stack Overflow
+- Check out the [Nexus Repository User List](https://groups.google.com/a/glists.sonatype.com/forum/?hl=en#!forum/nexus-users)
